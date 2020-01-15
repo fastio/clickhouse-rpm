@@ -62,6 +62,7 @@ MY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 # are standing inside sources tree
 CH_SRC_ROOT_DIR=$(readlink -e "$MY_DIR"/..)
 
+MY_DIR="$CWD_DIR"
 # Docker build context root dir
 DOCKER_CONTEXT_ROOT_DIR="$MY_DIR"
 
@@ -488,7 +489,7 @@ function setup_local_build_dirs()
 
 	DOCKER_CONTEXT_ROOT_DIR="${CH_SRC_ROOT_DIR}/build"
 
-	set_rpmbuild_dirs "${CH_SRC_ROOT_DIR}/build/rpmbuild"
+	set_rpmbuild_dirs "${CWD_DIR}/rpmbuild"
 }
 
 ##
@@ -505,6 +506,9 @@ function setup_local_build()
 	# For v18.14.13-stable
 
 	# Ex.: 54409
+	# CH_SRC_ROOT_DIR=$CWD_DIR/rpmbuild/SOURCES/ClickHouse-19.16.10.44-stable
+	CH_SRC_ROOT_DIR=$CWD_DIR/rpmbuild/SOURCES/`(ls -l $CWD_DIR/rpmbuild/SOURCES/ |awk '/^d/ {print $NF}')`
+
 	VERSION_REVISION=$(grep "set(VERSION_REVISION" ${CH_SRC_ROOT_DIR}/dbms/cmake/version.cmake | sed 's/^.*VERSION_REVISION \(.*\)$/\1/' | sed 's/[) ].*//')
 
 	# Ex.: 18 for v18.14.13-stable
