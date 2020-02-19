@@ -34,6 +34,7 @@ function os_unsupported()
 function os_yum_based()
 {
 	[ "$OS" == "rhel" ] || [ "$OS" == "centos" ] || [ "$OS" == "fedora" ] || [ "$OS" == "ol" ]
+#	|| [ "$OS" == "tlinux" ]
 }
 
 ##
@@ -190,6 +191,15 @@ function os_detect()
 		# do not know this OS
 		os_unsupported
 	fi
+
+	if [ "$OS" == "tlinux" ]; then
+		OS='centos'
+		# need to parse "CentOS release 6.9 (Final)"
+		# DISTR_MAJOR=6
+		# DISTR_MINOR=9
+       		DISTR_MAJOR=`cat /etc/centos-release | awk '{ print $3 }' | awk -F '.' '{ print $1 }'`
+       		DISTR_MINOR=`cat /etc/centos-release | awk '{ print $3 }' | awk -F '.' '{ print $2 }'`
+    fi
 
 	echo "OS detected: $OS $DISTR_MAJOR $DISTR_MINOR"
 }
